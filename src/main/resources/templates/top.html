@@ -1,10 +1,98 @@
+<!-- templates/top.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Top Fragment</title>
+    <link href="/css/top.css" rel="stylesheet" />
+    <link href="/css/style.css" rel="stylesheet" />
 </head>
 <body>
+<div class="topcontainer" th:fragment="menu">
+    <header>
+        <div class="parentheader">
+            <div class="childheader" id="left">
+                <script th:src="@{/js/clockmain.js}"></script>
+                <div class="clockbox">
+                    <div id="time" class="time"></div>
+                    <div id="date" class="date"></div>
+                </div>
+            </div>
+            <div class="childheader" id="center">
+                <img alt="" th:src="@{/image/ezenlogo_1.png}">
+            </div>
+            <div class="childheader" id="right">
+                <div class="testday">
+                    <h3>2025학년도 수능까지</h3><br><br>
+                    <script type="text/javascript">
+                        function calculateDDay() {
+                            const dday = new Date("2024-11-14"); // 디데이
+                            const today = new Date(); // 현재 날짜 가져오기
+                            const gap = dday - today;
+                            const resultday = Math.floor(gap / (1000*60*60*24));
+                            document.getElementById("ddaytext").innerHTML = "D-" + resultday;
+                        }
 
+                        window.onload = function(){
+                            calculateDDay();
+                            setclock();
+                            setInterval(setclock, 1000);
+                        }
+                    </script>
+                    <h2 id="ddaytext"> </h2>
+                </div>
+            </div>
+        </div>
+    </header>
+    <nav class="navbar">
+        <div class="navbar__logo">
+            <i class="fa-solid fa-graduation-cap fa-lg" style="color: #eaecea;"></i>
+            <a th:href="@{/}">EzenEDU</a>
+        </div>
+        <ul class="navbar__menu">
+            <li class="navbar__menud"><a href="#">회원관리</a>
+                <div class="navbar__dropdown">
+                    <ul>
+                        <li class="navbar__dropdownli"><a th:href="@{/member_input}">회원등록</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/member_out_student}">학생목록</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/member_out_teacher}">강사목록</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="navbar__menud"><a href="#">성적데이터</a>
+                <div class="navbar__dropdown">
+                    <ul>
+                        <li class="navbar__dropdownli"><a th:href="@{/score_input}">성적입력</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/score_out}">성적조회</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="navbar__menud"><a href="#">강의</a>
+                <div class="navbar__dropdown">
+                    <ul>
+                        <li class="navbar__dropdownli"><a th:href="@{/lectureinput}">강의등록</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/lectureout}">강의리스트</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="navbar__menud"><a href="#">자유게시판</a>
+                <div class="navbar__dropdown">
+                    <ul>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_free_input}">게시글등록</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_free_page}">자유게시판</a></li>
+                    </ul>
+                </div>
+            </li>
+            <li class="navbar__menud"><a href="#">수강후기</a>
+                <div class="navbar__dropdown">
+                    <ul>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_review_input}">후기등록</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_review_page}">후기조회</a></li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </nav>
+</div>
 </body>
 </html>

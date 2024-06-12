@@ -1,0 +1,77 @@
+@charset "UTF-8";
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+table {
+	background: #f5f5f5;
+	height: auto;
+	border-collapse: collapse;
+	border: 2px solid black;
+	margin: auto;
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+
+th, td {
+	border-collapse: collapse;
+	padding: 10px;
+	border: 1px solid gray;
+}
+
+th {
+	background-color:#cbcbcc;
+}
+
+table a {
+	color: black;
+}
+
+table a:hover {
+	color: #44c6da;
+}
+
+table tr:not(:first-child):not(:last-child):hover {
+    background: #b9dfd2;
+}
+
+/* 별점 항목 */
+#star-rating {
+    display: inline-block; /* 별점 항목을 인라인 블록 요소로 표시합니다. */
+    direction: rtl; /* 텍스트의 방향을 오른쪽에서 왼쪽으로 설정합니다. */
+    border: 0; /* 테두리를 없앱니다. */
+}
+
+#star-rating legend {
+    text-align: right; /* 범례(legend)의 텍스트를 오른쪽 정렬합니다. */
+}
+
+#star-rating input[type=radio] {
+    display: none; /* 라디오 버튼을 화면에서 숨깁니다. */
+}
+
+/* 레이블 스타일: 기본 별은 회색 */
+#star-rating label {
+    font-size: 1.5em; /* 레이블의 글꼴 크기를 설정합니다. */
+    color: transparent; /* 레이블의 색상을 투명하게 설정하여 텍스트를 숨깁니다. */
+    text-shadow: 0 0 0 #9c9c9c; /* 텍스트에 그림자 효과를 적용하여 텍스트를 회색으로 만듭니다. */
+}
+
+/* 마우스가 올라간 별 이후의 모든 별에 스타일 적용 */
+#star-rating label:hover,
+#star-rating input[type=radio]:hover ~ label {
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99); /* 마우스가 올라간 별과 그 이후의 모든 별(오른쪽->왼쪽 방향)에 노란색 그림자 효과를 적용합니다. */
+}
+
+/* 체크된 별의 스타일 */
+/*  + 연산자는 형제 요소 중에서 바로 다음에 위치한 요소를 선택
+	~ 연산자는 형제 요소 중에서 선택한 요소의 뒤에 있는 모든 요소를 선택*/
+#star-rating input[type=radio]:checked,
+#star-rating input[type=radio]:checked ~ label {
+    text-shadow: 0 0 0 rgba(250, 208, 0, 0.99); /* 체크된 라디오 버튼 바로 뒤에 오는 별~그 이후의 모든 별에 노란색 그림자 효과를 적용합니다. */
+}

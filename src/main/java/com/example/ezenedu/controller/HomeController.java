@@ -15,4 +15,9 @@ public class HomeController {
     public String main2(){
         return "main";
     }
+
+    @GetMapping("/top")
+    public String main3(){
+        return "top";
+    }
 }
