@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>이젠에듀 :: 회원가입</title>
+    <link href="../css/member_join.css" rel="stylesheet" />
+</head>
+<body>
+<div th:replace="~{top}"></div>
+
+<div class="container">
+
+    <h2 class="input2">회원 유형 선택</h2>
+
+    <div class="meminputimg">
+        <div class="input_click">
+            <a th:href="@{/member_input_student}">
+                <div class="click_image"><img src="/image/group_student.png" width="300px" height="300px"></div>
+                <div class="click_text">학생회원</div>
+            </a>
+        </div>
+        <div class="input_click">
+            <a th:href="@{/member_input_teacher}">
+                <div class="click_image"><img src="/image/job_teacher_woman.png" width="300px" height="300px"></div>
+                <div class="click_text">선생님회원</div>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

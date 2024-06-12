@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css">
     <meta charset="UTF-8">
     <title>Top Fragment</title>
     <link href="/css/top.css" rel="stylesheet" />
@@ -50,46 +51,70 @@
             <a th:href="@{/}">EzenEDU</a>
         </div>
         <ul class="navbar__menu">
-            <li class="navbar__menud"><a href="#">회원관리</a>
+            <li class="navbar__menud" th:if="${position == 'admin'}"><a href="#">회원관리</a>
                 <div class="navbar__dropdown">
                     <ul>
-                        <li class="navbar__dropdownli"><a th:href="@{/member_input}">회원등록</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/member_join}">회원등록</a></li>
                         <li class="navbar__dropdownli"><a th:href="@{/member_out_student}">학생목록</a></li>
                         <li class="navbar__dropdownli"><a th:href="@{/member_out_teacher}">강사목록</a></li>
                     </ul>
                 </div>
             </li>
-            <li class="navbar__menud"><a href="#">성적데이터</a>
+            <li class="navbar__menud"><a href="#">성적관리</a>
                 <div class="navbar__dropdown">
                     <ul>
                         <li class="navbar__dropdownli"><a th:href="@{/score_input}">성적입력</a></li>
-                        <li class="navbar__dropdownli"><a th:href="@{/score_out}">성적조회</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/score_out}">나의성적</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/score_out}">수능/모의고사 현황</a></li>
                     </ul>
                 </div>
             </li>
-            <li class="navbar__menud"><a href="#">강의</a>
+            <li class="navbar__menud"><a href="#">강의/교재</a>
                 <div class="navbar__dropdown">
                     <ul>
-                        <li class="navbar__dropdownli"><a th:href="@{/lectureinput}">강의등록</a></li>
-                        <li class="navbar__dropdownli"><a th:href="@{/lectureout}">강의리스트</a></li>
+                        <li class="navbar__dropdownli" th:if="${position == 'admin' or position == 'teacher'}">
+                            <a th:href="@{/lectureinput}">강의등록</a></li>
+                        <li class="navbar__dropdownli" th:if="${position == 'admin' or position == 'teacher'}">
+                            <a th:href="@{/bookinput}">교재등록</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/lectureout}">강의</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/lectureout}">교재/참고서</a></li>
                     </ul>
                 </div>
             </li>
             <li class="navbar__menud"><a href="#">자유게시판</a>
                 <div class="navbar__dropdown">
                     <ul>
-                        <li class="navbar__dropdownli"><a th:href="@{/board_free_input}">게시글등록</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_free_input}">게시글작성</a></li>
                         <li class="navbar__dropdownli"><a th:href="@{/board_free_page}">자유게시판</a></li>
                     </ul>
                 </div>
             </li>
-            <li class="navbar__menud"><a href="#">수강후기</a>
+            <li class="navbar__menud"><a href="#">질문/후기</a>
                 <div class="navbar__dropdown">
                     <ul>
-                        <li class="navbar__dropdownli"><a th:href="@{/board_review_input}">후기등록</a></li>
-                        <li class="navbar__dropdownli"><a th:href="@{/board_review_page}">후기조회</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_review_input}">후기작성</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_review_page}">후기게시판</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_review_input}">질문작성</a></li>
+                        <li class="navbar__dropdownli"><a th:href="@{/board_review_page}">질문게시판</a></li>
                     </ul>
                 </div>
+            </li>
+        </ul>
+        <ul class="navbar__icons">
+            <li class="navbar__menud" id="myinfo" th:if="${loginstate != null and loginstate}">
+                <a th:href="@{/mypage}">[[${loginid}]] 님의<br>마이페이지</a>
+            </li>
+            <li class="navbar__menud" th:if="${loginstate != null and loginstate}">
+                <i class="fa-solid fa-right-from-bracket" style="color: #ddf2ea;"></i>
+                <a th:href="@{/logout}">로그아웃</a>
+            </li>
+            <li class="navbar__menud" th:if="${loginstate == null or !loginstate}">
+                <i class="fa-solid fa-user-plus" style="color: #ddf2ea;"></i>
+                <a th:href="@{/member_join}">회원가입</a>
+            </li>
+            <li class="navbar__menud" th:if="${loginstate == null or !loginstate}">
+                <i class="fa-solid fa-right-to-bracket" style="color: #ddf2ea;"></i>
+                <a th:href="@{/login}">로그인</a>
             </li>
         </ul>
     </nav>

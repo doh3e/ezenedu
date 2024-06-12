@@ -7,25 +7,29 @@
     font-style: normal;
 }
 .topcontainer{
-    width:90%;
+    width:1200px;
 	display:flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	gap:30px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    margin-bottom:30px;
 }
 
 .parentheader{
-    width:100%;
+    width:1200px;
+    height:auto;
 	display:flex;
 	align-items: center;
-	justify-content: center;
+	justify-content: space-between;
 	margin-top:30px;
-	gap:500px;
 }
 
 .navbar {
-    width:100%;
+    width:1200px;
 	text-align: center;
 	justify-content: center;
 	padding-left:0;
