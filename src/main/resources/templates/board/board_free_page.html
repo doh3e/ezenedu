@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{top}"></div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>자유게시판 :: 전체보기</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var sortParam = urlParams.get('sort');
+
+            if (sortParam) {
+                $('.sort-box').removeClass('active');
+                if (sortParam === 'latest') {
+                    $('.sort-box.latest').addClass('active');
+                } else if (sortParam === 'popular') {
+                    $('.sort-box.popular').addClass('active');
+                }
+            } else {
+                $('.sort-box.latest').addClass('active');
+            }
+
+            $('#category').change(function() {
+                var select_category = $(this).val();
+                $.ajax({
+                    type: "POST",
+                    url: "[[@{/board_free_search}]]",
+                    data: {'category' : select_category},
+                    dataType: "html",
+                    success: function(data) {
+                        $('#board-list').html(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error: " + error);
+                        alert("카테고리 별 게시글을 불러오는데 실패했습니다.");
+                    }
+                });
+            });
+
+            $('#search-form').submit(function(event) {
+                event.preventDefault(); // 검색 폼의 기본 동작인 페이지 이동을 막음
+                var form_data = $(this).serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "[[@{/review_search}]]",
+                    data: form_data,
+                    dataType: "html",
+                    success: function(response) {
+                        alert("입력하신 검색어를 포함한 게시글을 찾는 중입니다.");
+                        $('#board-list').html(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error: " + error);
+                        alert("검색 결과를 불러오는데 실패했습니다.");
+                    }
+                });
+            });
+
+            // 검색 카테고리에 따른 placeholder 변경
+            $('select[name="search_category"]').change(function() {
+                var choice = $(this).val();
+                var search = $('#search');
+                var year = $('#year');
+                var month = $('#month');
+
+                if (choice === 'vdate' || choice === 'wdate') {
+                    search.hide();
+                    year.show();
+                    month.show();
+                } else {
+                    search.show();
+                    year.hide();
+                    month.hide();
+                }
+            });
+
+            $('#year').change(function() {
+                var select_year = $(this).val();
+                if (select_year === "2020") {
+                    $('#month').val("");
+                    $('#month').hide();
+                } else {
+                    $('#month').show();
+                }
+            });
+        });
+
+        function toggleContent(id) {
+            var content = document.getElementById("content" + id);
+            var toggleIcon = document.getElementById("toggleIcon" + id);
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "table-row"; // 숨겨진 요소를 보이게 함
+                toggleIcon.innerText = "▲"; // 아이콘 변경
+            } else {
+                content.style.display = "none"; // 보이는 요소를 숨김
+                toggleIcon.innerText = "▼"; // 아이콘 변경
+            }
+        }
+
+        function sortAndColor(selectDiv, sortType) {
+            $('.sort-box').removeClass('active');
+            $(selectDiv).addClass('active');
+            window.location.href = "[[@{/review_page}]]?sort=" + sortType;
+        }
+    </script>
+    <style>
+        .wide-cell {
+            padding: 10px;
+            cursor: pointer; /* 커서를 포인터로 변경하여 사용자에게 클릭 가능한 요소임을 나타냄 */
+        }
+        .hidden {
+            display: none; /* 숨겨진 요소 */
+        }
+    </style>
+</head>
+<body>
+<div class="review_container">
+
+    <section class="notice">
+
+        <!-- board search area -->
+        <div id="board-search">
+            <div class="container">
+                <div class="search-window">
+                    <div class="category_select">
+                        <span>카테고리&nbsp;&nbsp;</span>
+                        <select name="category" id="category">
+                            <option value="잡담">잡담</option>
+                            <option value="잡담">질문</option>
+                            <option value="잡담">건의</option>
+                            <option value="기타">기타</option>
+                            <option value="자랑">자랑</option>
+                        </select>
+                    </div>
+
+                    <div class="sort-options">
+                        <label id="sort-title">정렬 방식</label>&nbsp;
+                        <div class="sort-box latest" onclick="sortAndColor(this, 'latest')"><span>최신순</span></div>
+                        <div class="sort-box popular" onclick="sortAndColor(this, 'popular')"><span>추천순</span></div>
+                    </div>
+
+                    <form id="search-form">
+                        <div class="search-wrap">
+                            <select name="search_category">
+                                <option value="title">제목</option>
+                                <option value="intext">내용</option>
+                                <option value="name">작성자</option>
+                                <option value="totsearch">제목+내용+작성자</option>
+                                <option value="wdate">게시일</option>
+                            </select>
+                            <input id="search" type="search" name="search" placeholder="검색어를 입력해주세요." value="">
+
+                            <select id="year" name="year" style="display:none;">
+                                <option value="" selected>년도 선택</option>
+                                <option value="2020">2020년</option>
+                                <option value="2023">2023년</option>
+                            </select>
+                            <select id="month" name="month" style="display:none;">
+                                <option value="" selected>월 선택</option>
+                                <option value="01">1월</option>
+                                <option value="02">2월</option>
+                                <option value="03">3월</option>
+                                <option value="04">4월</option>
+                                <option value="05">5월</option>
+                                <option value="06">6월</option>
+                                <option value="07">7월</option>
+                                <option value="08">8월</option>
+                                <option value="09">9월</option>
+                                <option value="10">10월</option>
+                                <option value="11">11월</option>
+                                <option value="12">12월</option>
+                            </select>
+                            <button type="submit">검색</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- board message area -->
+        <div id="board-message">
+            <div class="container">
+                <table class="board-table">
+                    <thead>
+                    <tr>
+                        <th colspan="7">여러분만의 <span style="color: red;">특별한 게시글</span>을 찾아보세요.</th>
+                    </tr>
+                    <tr class="hidden" id="content3">
+                        <td colspan="7">
+                            <div style="text-align: left;">
+                                바다는 넓고도 넓습니다. 모든 바다가 다르듯이 여러분이 찾고자 하는 바다의 특징도 모두 다를 수밖에 없습니다. <br>
+                                <바라는 바다>에서는 여러분이 찾고자 하는 바다의 모든 정보와 리뷰를 공유할 수 있는 공간을 마련했습니다. <br> <br>
+                                    이곳에서는 다른 사용자들이 남긴 리뷰를 통해 어떤 바다를 방문했는지, 그 바다의 장점과 단점은 무엇인지 공유하여 <바라는 바다> 사용자들 간에서 알게 되는 정보가 양질의 정보이길 바랍니다! <br> <br>
+                                        바다의 색깔이나 전경이 잘 보이는 사진들, 그 바다의 특징이 잘 살아있는 후기들은 다른 사용자들로부터 '추천'을 받아 best 글이 될 확률이 높습니다. <br>
+                                        <바라는 바다>에서는 이러한 best 후기를 작성한 유저에게 소정의 상품을 지급하고 있으니, 함께 깨끗하고 맑은 정보의 바다를 형성해주시면 좋겠습니다. <br> <br>
+                                            언제나 여러분이 여러분만의 아름다운 바다를 찾을 수 있길 소망합니다. <br>
+                                            이상, <바라는 바다!> 개발자팀이었습니다. <br> <br>
+                                                Contact us: <br>
+                                                경기 수원시 팔달구 향교로 2(매산로1가 60-3) [16455] <br>
+                                                031-253-6776 <br>
+                                                ezen.bada@gmail.com <br>
+                            </div>
+                        </td>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+
+        <!-- board list area -->
+        <div id="board-list">
+            <div class="container">
+                <table class="board-table">
+                    <thead>
+                    <tr>
+                        <th scope="col" class="th-num">번호</th>
+                        <th scope="col" class="th-title">제목</th>
+                        <th scope="col" class="th-writer">작성자</th>
+                        <th scope="col" class="th-date vdate">방문일</th>
+                        <th scope="col" class="th-date wdate">작성일</th>
+                        <th scope="col" class="th-num recommend">추천수</th>
+                        <th scope="col" class="th-num view">조회수</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${list}">
+                        <td th:text="${item.review_num}"></td>
+                        <td class="text_title">
+                            <a th:href="@{/review_detail(review_num=${item.review_num})}">
+                                <span th:text="${item.review_title}"></span> <span class="reply_check" th:text="'[' + ${item.reply} + ']'"></span>
+                            </a>
+                        </td>
+                        <td th:text="${item.name} + '(' + ${#strings.substring(item.id, 0, 4)} + '****)' + '님'"></td>
+                        <td th:text="${item.visit_day}"></td>
+                        <td th:text="${item.write_day}"></td>
+                        <td th:text="${item.recommend}"></td>
+                        <td th:text="${item.hits}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+        </div>
+
+    </section>
+</div>
+</body>
+</html>
