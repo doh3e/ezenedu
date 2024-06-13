@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div th:replace="~{top}"></div>
+
+<head>
+    <meta charset="UTF-8">
+    <title>강의 정보 입력 사이트</title>
+    <style>
+        table {
+            margin: 0 auto;
+        }
+        th, td {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+<form th:action="@{/lecturesave}" method="post" enctype="multipart/form-data">
+    <table border="1" align="center" width="800px">
+        <caption>강의 정보 입력창</caption>
+
+        <tr>
+            <th>강의 썸네일</th>
+            <td><input type="file" name="lectthumbnail" required></td>
+        </tr>
+
+        <tr>
+            <th>강의명</th>
+            <td><input type="text" name="lect" required></td>
+        </tr>
+        <tr>
+            <th>강사명</th>
+            <td><input type="text" name="lectname" required></td>
+        </tr>
+        <tr>
+            <th>강의 과목</th>
+            <td>
+                <select name="lectsubject" required>
+                    <optgroup label="공통과목">
+                        <option value="kor">국어</option>
+                        <option value="eng">영어</option>
+                        <option value="mat">수학</option>
+                        <option value="his">한국사</option>
+                    </optgroup>
+                    <optgroup label="사회 탐구">
+                        <option value="sy">생활과 윤리</option>
+                        <option value="ys">윤리와 사상</option>
+                        <option value="hj">한국지리</option>
+                        <option value="sj">세계지리</option>
+                        <option value="ds">동아시아사</option>
+                        <option value="ss">세계사</option>
+                        <option value="kj">경제</option>
+                        <option value="jb">정치와 법</option>
+                        <option value="sm">사회문화</option>
+                    </optgroup>
+                    <optgroup label="과학 탐구">
+                        <option value="m1">물리Ⅰ</option>
+                        <option value="h1">화학Ⅰ</option>
+                        <option value="s1">생명과학Ⅰ</option>
+                        <option value="j1">지구과학Ⅰ</option>
+                        <option value="m2">물리Ⅱ</option>
+                        <option value="h2">화학Ⅱ</option>
+                        <option value="s2">생명과학Ⅱ</option>
+                        <option value="j2">지구과학Ⅱ</option>
+                    </optgroup>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>강의 대상 학년</th>
+            <td>
+                <input type="radio" name="lectgrade" value="1" required>1학년
+                <input type="radio" name="lectgrade" value="2" required>2학년
+                <input type="radio" name="lectgrade" value="3" required>3학년, n수생
+            </td>
+        </tr>
+        <tr>
+            <th>강의 개요</th>
+            <td><textarea rows="7" cols="50" name="lectintro" required></textarea></td>
+        </tr>
+        <tr>
+            <th>강의 차수</th>
+            <td><input type="number" name="lecttime" min="1" max="99" required></td>
+        </tr>
+        <tr>
+            <th>수강 가능 기간</th>
+            <td>수강 신청일로 부터 <br>
+                <input type="radio" name="lectlimit" value="30" required>30일
+                <input type="radio" name="lectlimit" value="50" required>50일
+                <input type="radio" name="lectlimit" value="100" required>100일
+                <input type="radio" name="lectlimit" value="200" required>200일
+                <input type="radio" name="lectlimit" value="300" required>300일
+                <input type="radio" name="lectlimit" value="500" required>500일
+            </td>
+        </tr>
+        <tr>
+            <th>강의 분류1</th>
+            <td>
+                <input type="radio" name="lectcategory1" value="내신 대비 강의" required>내신 대비 강의
+                <input type="radio" name="lectcategory1" value="수능/모의고사 대비 강의" required>수능/모의고사 대비 강의
+            </td>
+        </tr>
+        <tr>
+            <th>강의 분류2</th>
+            <td>
+                <input type="radio" name="lectcategory2" value="개념 위주 강의" required>개념 위주 강의
+                <input type="radio" name="lectcategory2" value="문제풀이 위주 강의" required>문제풀이 위주 강의
+                <input type="radio" name="lectcategory2" value="요약/총정리 강의" required>요약/총정리 강의
+            </td>
+        </tr>
+        <tr>
+            <th>교재 유무 여부</th>
+            <td>
+                <input type="radio" name="lectbook" value="필요" required>교재 필요
+                <input type="radio" name="lectbook" value="불필요" required>교재 불필요
+                <input type="radio" name="lectbook" value="무료 제공" required>교재 무료 제공
+            </td>
+        </tr>
+        <tr>
+            <th>강의 난이도</th>
+            <td>
+                <input type="radio" name="lectdifficulty" value="고난도" required>고난도
+                <input type="radio" name="lectdifficulty" value="보통 난이도" required>보통 난이도
+                <input type="radio" name="lectdifficulty" value="저난이도" required>저난이도
+                <input type="radio" name="lectdifficulty" value="기초" required>기초
+            </td>
+        </tr>
+        <tr>
+            <th>강의 목차</th>
+            <td id="lectureindexpack">
+                <input type="text" name="lectindex1" id="lectindex1" required>
+                <button type="button" onclick="addLectureField()">(+)</button>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                <input type="submit" value="전송">
+                <a th:href="@{/main}">
+                    <input type="button" value="입력 취소">
+                </a>
+            </td>
+        </tr>
+    </table>
+</form>
+
+<script>
+    var lectureCount = 1;
+    function addLectureField() {
+        lectureCount++;
+        // 새로운 입력 필드를 생성
+        var newField = document.createElement('div');
+        newField.innerHTML = '<input type="text" name="lectindex' + lectureCount + '" id="lectindex' + lectureCount + '">';
+        // 새로운 입력 필드를 폼에 추가합니다.
+        document.getElementById('lectureindexpack').appendChild(newField);
+    }
+</script>
+</body>
+
+</html>
