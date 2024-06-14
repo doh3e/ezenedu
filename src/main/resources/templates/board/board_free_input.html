@@ -1,100 +1,133 @@
 <!DOCTYPE html>
-
 <html xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{top}"></div>
 <head>
     <meta charset="UTF-8">
     <title>자유게시글 작성</title>
-    <!-- summernote   -->
-    <link rel="stylesheet" type="text/css" th:href="@{/summerNote/summernote-lite.min.css}" />
-    <script type="text/javascript" th:src="@{/summerNote/summernote-lite.min.js}"></script>
-    <script type="text/javascript" th:src="@{/summerNote/lang/summernote-ko-KR.min.js}"></script>
 
+    <!-- jQuery 라이브러리 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Summernote 스타일시트 -->
+    <link rel="stylesheet" type="text/css" href="/summernote/summernote-lite.min.css" />
+    <!-- Summernote 스크립트 -->
+    <script type="text/javascript" src="/summernote/summernote-lite.min.js"></script>
+    <script type="text/javascript" src="/summernote/lang/summernote-ko-KR.min.js"></script>
+
+    <style>
+        .wrapper { padding: 10px; }
+
+        @font-face {
+            font-family: 'BMEULJIRO';
+            src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/BMEULJIRO.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
 </head>
-<style>
-    .wrapper { padding: 10px; }
-
-    @font-face {
-    font-family: 'BMEULJIRO';
-    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/BMEULJIRO.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-</style>
 
 <body>
-<form name="writeContent" action="/blog/create" method="post" enctype="multipart/form-data">
-    <textarea id="summernote" name="content"></textarea><br/>
-    <input type="hidden" name="writtenBy" th:value="${dto.name}"/>
-    <button type="button" onClick="createReview()">Submit</button>
-</form>
+<div th:replace="~{top}"></div> <!-- 상단바를 포함하는 부분을 head에서 body로 이동 -->
+<div class="wrapper">
+    <form name="writeContent" action="/blog/create" method="post" enctype="multipart/form-data">
+        <input type="text" name="title" required placeholder="제목을 입력하세요."/>
+        <input type="text" name="writer" readonly th:value="${loginname}"/>
+        <textarea id="summernote" name="summernote"></textarea><br/>
+        <input type="hidden" name="writtenBy" th:value="${loginid}"/>
+        <button type="submit">Submit</button> <!-- 버튼 타입을 submit으로 변경 -->
+    </form>
+</div>
+
 <script>
-    $('#summernote').summernote({
-        placeholder: '내용을 입력해주세요',
-        // 에디터 높이
-        height: 400,
-        // 에디터 한글 설정
-        lang: "ko-KR",
-        // 에디터에 커서 이동 (input창의 autofocus라고 생각)
-        focus : true,
-        toolbar: [
-            // 글꼴 설정
-            ['fontname', ['fontname']],
-            // 글자 크기 설정
-            ['fontsize', ['fontsize']],
-            // 굵기, 기울임꼴, 밑줄, 취소 선, 서식지우기
-            ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
-            // 글자색
-            ['color', ['forecolor','color']],
-            // 표만들기
-            ['table', ['table']],
-            // 글머리 기호, 번호매기기, 문단정렬
-            ['para', ['ul', 'ol', 'paragraph']],
-            // 줄간격
-            ['height', ['height']],
-            // 코드보기, 확대해서보기, 도움말
-            ['view', ['codeview','fullscreen', 'help']],
-            // 이미지 첨부
-		    ['insert',['picture']]
-        ],
-        // 추가한 글꼴
-        fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋음체','바탕체'],
-        // 추가한 폰트사이즈
-        fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
-        // callbacks은 이미지 업로드 처리입니다.
-		callbacks : {
-			onImageUpload : function(files, editor, welEditable) {
-                // 다중 이미지 처리를 위해 for문을 사용했습니다.
-				for (var i = 0; i < files.length; i++) {
-					imageUploader(files[i], this);
-				}
-			}
-		}
+    $(document).ready(function() {
+        $('#summernote').summernote({
+            placeholder: '내용을 입력해주세요',
+            height: 400,
+            minHeight: null, // 최소 높이
+            maxHeight: null, // 최대 높이
+            lang: 'ko-KR',
+            focus : true,
+            toolbar: [
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['style', ['bold', 'italic', 'underline','strikethrough', 'clear']],
+                ['color', ['forecolor','color']],
+                ['table', ['table']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']],
+                ['view', ['codeview','fullscreen', 'help']],
+                ['insert',['picture', 'link', 'video']]
+            ],
+            fontNames: ['Arial', 'Arial Black', 'Comic Sans MS', 'Courier New','맑은 고딕','궁서','굴림체','굴림','돋음체','바탕체'],
+            fontSizes: ['8','9','10','11','12','14','16','18','20','22','24','28','30','36','50','72'],
+
+            callbacks : {
+                onImageUpload : function(files, editor, welEditable) {
+                    for (var i = 0; i < files.length; i++) {
+                        var fileName = files[i].name
+
+                        // 이미지 alt 속성 삽일을 위한 설정
+                        var caption = prompt('이미지 설명 :', fileName)
+                        if (caption == '') {
+                            caption = '이미지'
+                        }
+                        imageUploader(files[i], this, caption);
+                    }
+                }
+                onMediaDelete: function ($target, editor, $editable) {
+                    if (confirm('이미지를 삭제 하시겠습니까?')) {
+                        var deletedImageUrl = $target
+                            .attr('src')
+                            .split('/')
+                            .pop()
+
+                        // ajax 함수 호출
+                        deleteSummernoteImageFile(deletedImageUrl)
+                    }
+                }
+            }
+        });
+
+        // 이미지 파일 업로드
+        function imageUploader(file, el, caption) {
+            var formData = new FormData();
+            formData.append('file', file);
+
+            $.ajax({
+                data : formData,
+                type : "POST",
+                url : 'uploadSummernoteImageFile',
+                contentType : false,
+                processData : false,
+                enctype : 'multipart/form-data',
+                success : function(data) {
+                    $(el).summernote(
+                    'insertImage',
+                    "/image/upload/" + data,
+                    function($image) {
+                        $image.css('width', "100%");
+                        $image.attr('alt', caption) // 캡션 정보를 이미지의 alt 속성에 설정
+                    });
+                    console.log(data);
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log("Image upload error: " + errorThrown);
+                }
+            });
+        }
+
+        function deleteSummernoteImageFile(imageName) {
+            data = new FormData()
+            data.append('file', imageName)
+            $.ajax({
+                data: data,
+                type: 'POST',
+                url: 'deleteSummernoteImageFile',
+                contentType: false,
+                enctype: 'multipart/form-data',
+                processData: false,
+            })
+        }
     });
-
-    // 이미지 파일 업로드
-    function imageUploader(file, el) {
-	var formData = new FormData();
-	formData.append('file', file);
-
-	$.ajax({
-		data : formData,
-		type : "POST",
-        // url은 자신의 이미지 업로드 처리 컨트롤러 경로로 설정해주세요.
-		url : '/post/image-upload',
-		contentType : false,
-		processData : false,
-		enctype : 'multipart/form-data',
-		success : function(data) {
-			$(el).summernote('insertImage', "/image/upload/"+data, function($image) {
-				$image.css('width', "100%");
-			});
-            // 값이 잘 넘어오는지 콘솔 확인 해보셔도됩니다.
-			console.log(data);
-		}
-	});
-}
 </script>
 </body>
-
 </html>
